@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{deploymentName}}-blue"
+spec:
+  selector:
+    matchLabels:
+      name: "{{deploymentName}}"
+      version: blue
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        name: "{{deploymentName}}"
+        version: blue
+    spec:
+      containers:
+      - name: "{{deploymentName}}"
+    # enter the path to your image, be sure to include the correct region prefix    
+        image: "{{image}}"
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+    # enter the name of the secret you created  
+      - name: "{{imagePullSecret}}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{deploymentName}}-blue"
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    name: "{{deploymentName}}"
+    version: blue
+
